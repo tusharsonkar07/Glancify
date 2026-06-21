@@ -31,13 +31,13 @@ export default function IntroPage({ onComplete }) {
 
         {/* Logo mark */}
         <div className="flex justify-center">
-          <img src="/icons/glancify mobile logo.png" alt="NewsWave" className="w-16 h-16 rounded-2xl shadow-xl" />
+          <img src="/icons/glancify mobile logo.png" alt="Glancify" className="w-16 h-16 rounded-2xl shadow-xl" />
         </div>
 
         {/* Headline */}
         <div style={{ animationDelay: '0.1s' }} className="animate-intro-reveal">
           <h1 className="font-display text-5xl font-bold leading-none tracking-tight mb-2">
-            News<span className="text-scarlet">Wave</span>
+            Glanc<span className="text-scarlet">ify</span>
           </h1>
           <p className="text-white/60 font-body text-lg">
             Read the world's stories, beautifully.
