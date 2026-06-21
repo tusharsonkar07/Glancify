@@ -1,4 +1,4 @@
-# 🌊 NewsWave
+# glancify
 
 > A beautiful, fast, installable news reader — built with React, Express, and Newsdata.io.
 
@@ -69,7 +69,7 @@ newsapp/
    NEWSDATA_API_KEY=your_key_here
    FRONTEND_URL=https://your-vercel-app.vercel.app
    ```
-5. Railway gives you a public URL like `https://newswave-backend.railway.app`
+5. Railway gives you a public URL like `https://glancify-backend.railway.app`
 
 ---
 
@@ -80,10 +80,10 @@ newsapp/
 3. Set **Root Directory** to `frontend`
 4. In **Environment Variables**, add:
    ```
-   VITE_API_URL=https://newswave-backend.railway.app/api
+   VITE_API_URL=https://glancify-backend.railway.app/api
    ```
 5. In `frontend/vercel.json`, replace `YOUR-RAILWAY-URL` with your actual Railway URL
-6. Deploy — Vercel gives you `https://newswave.vercel.app`
+6. Deploy — Vercel gives you `https://glancify.vercel.app`
 
 ---
 

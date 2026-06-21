@@ -1,7 +1,7 @@
 {
   "name": "newsapp-backend",
   "version": "1.0.0",
-  "description": "NewsWave backend — smart caching layer for Newsdata.io",
+  "description": "glancify backend — smart caching layer for Newsdata.io",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -31,7 +31,7 @@ export default function IntroPage({ onComplete }) {
 
         {/* Logo mark */}
         <div className="flex justify-center">
-          <img src="/icons/glancify mobile logo.png" alt="Glancify" className="w-16 h-16 rounded-2xl shadow-xl" />
+          <img src="/icons/glancify mobile logo.png" alt="glancify" className="w-16 h-16 rounded-2xl shadow-xl" />
         </div>
 
         {/* Headline */}

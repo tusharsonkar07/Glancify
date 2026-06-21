@@ -1,5 +1,5 @@
 /**
- * NewsWave Service Worker
+ * glancify Service Worker
  * ────────────────────────
  * Strategy:
  *   - Static assets  → Cache First (versioned, long-lived)
