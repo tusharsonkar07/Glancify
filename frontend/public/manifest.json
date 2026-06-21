@@ -1,6 +1,6 @@
 {
-  "name": "NewsWave",
-  "short_name": "NewsWave",
+  "name": "Glancify",
+  "short_name": "Glancify",
   "description": "Your intelligent, beautiful news reader",
   "start_url": "/",
   "display": "standalone",
@@ -9,13 +9,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/glancify mobile logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/glancify mobile logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
