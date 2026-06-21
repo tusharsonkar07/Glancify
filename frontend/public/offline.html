@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NewsWave — Offline</title>
+  <style>
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: #F7F6F3;
+           display: flex; align-items: center; justify-content: center;
+           min-height: 100vh; margin: 0; color: #1C1917; }
+    .card { text-align: center; padding: 2rem; max-width: 360px; }
+    .icon { font-size: 3rem; margin-bottom: 1rem; }
+    h1 { font-family: 'Fraunces', Georgia, serif; font-size: 1.75rem; margin: 0 0 0.5rem; }
+    p  { color: #78716C; margin: 0 0 1.5rem; line-height: 1.6; }
+    button { background: #1C1917; color: #fff; border: none; padding: 0.75rem 1.5rem;
+             border-radius: 8px; font-size: 0.95rem; cursor: pointer; }
+    button:hover { background: #374151; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">📡</div>
+    <h1>You're offline</h1>
+    <p>NewsWave needs a connection to load the latest stories. Check your network and try again.</p>
+    <button onclick="window.location.reload()">Try again</button>
+  </div>
+</body>
+</html>
