@@ -45,7 +45,7 @@ cron.schedule('0 * * * *', () => {
 
 // ─── Startup ─────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🚀  NewsWave backend running on :${PORT}\n`);
+  console.log(`\n🚀  Glancify backend running on :${PORT}\n`);
   // Warm up cache 3 seconds after boot so the server is accepting requests first
   setTimeout(refreshAllCategories, 3000);
 });

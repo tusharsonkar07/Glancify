@@ -28,9 +28,9 @@ export default function Header({ onSearch, onClearSearch, isSearching }) {
         {/* Logo */}
         {!open && (
           <a href="/" className="flex items-center gap-2 shrink-0">
-            <span className="text-xl">🌊</span>
+            <img src="/icons/glancify mobile logo.png" alt="NewsWave" className="w-6 h-6" />
             <span className="font-display font-bold text-xl text-ink tracking-tight">
-              News<span className="text-scarlet">Wave</span>
+              Glanc<span className="text-scarlet">ify</span>
             </span>
           </a>
         )}

@@ -31,9 +31,7 @@ export default function IntroPage({ onComplete }) {
 
         {/* Logo mark */}
         <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-3xl shadow-xl">
-            🌊
-          </div>
+          <img src="/icons/glancify mobile logo.png" alt="NewsWave" className="w-16 h-16 rounded-2xl shadow-xl" />
         </div>
 
         {/* Headline */}
