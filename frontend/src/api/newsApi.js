@@ -1,5 +1,5 @@
 /**
- * NewsWave API client
+ * glancify API client
  * Points to the Railway backend in production,
  * proxied to localhost:3001 in development (via vite.config.js).
  */

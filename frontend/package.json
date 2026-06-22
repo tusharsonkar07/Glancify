@@ -1,7 +1,7 @@
 {
-  "name": "newswave-frontend",
+  "name": "glancify-frontend",
   "version": "1.0.0",
-  "description": "NewsWave — your intelligent news reader",
+  "description": "glancify — your intelligent news reader",
   "type": "module",
   "scripts": {
     "dev":     "vite",
