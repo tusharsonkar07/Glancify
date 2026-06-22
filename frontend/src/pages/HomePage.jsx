@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import Header       from '../components/Header';
-import CategoryBar  from '../components/CategoryBar';
-import BentoGrid    from '../components/BentoGrid';
+import { useState, useRef, useCallback } from 'react';
+import Header        from '../components/Header';
+import CategoryBar   from '../components/CategoryBar';
+import BottomNav     from '../components/BottomNav';
+import BentoGrid     from '../components/BentoGrid';
 import ArticleReader from '../components/ArticleReader';
 import InstallBanner from '../components/InstallBanner';
 import { useNews, useSearch } from '../hooks/useNews';
-import { usePWA } from '../hooks/usePWA';
+import { usePWA }   from '../hooks/usePWA';
+
+const CATEGORY_ORDER = ['top', 'technology', 'business', 'sports', 'entertainment', 'science', 'health'];
+const SWIPE_THRESHOLD = 52;
+const SWIPE_Y_LIMIT   = 80;
 
 export default function HomePage() {
-  const [category,         setCategory]         = useState('top');
-  const [selectedArticle,  setSelectedArticle]  = useState(null);
-  const [bookmarks,        setBookmarks]         = useState(
+  const [category,        setCategory]        = useState('top');
+  const [selectedArticle, setSelectedArticle] = useState(null);
+  const [swipeDir,        setSwipeDir]        = useState(null);
+  const [bookmarks,       setBookmarks]       = useState(
     () => JSON.parse(localStorage.getItem('nw_bookmarks') || '[]')
   );
 
@@ -18,7 +24,43 @@ export default function HomePage() {
   const { query, results, loading: searching, search, clearSearch } = useSearch();
   const { showBanner, isIOS, triggerInstall, dismiss } = usePWA();
 
-  /* ─── Bookmark toggle ──────────────────────────────────────────────────── */
+  /* ─── Touch swipe ───────────────────────────────────────────────────────── */
+  const touchStart  = useRef(null);
+  const touchActive = useRef(false);
+
+  const handleTouchStart = useCallback((e) => {
+    const t = e.touches[0];
+    touchStart.current  = { x: t.clientX, y: t.clientY };
+    touchActive.current = true;
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    if (!touchActive.current || !touchStart.current) return;
+    touchActive.current = false;
+    const t  = e.changedTouches[0];
+    const dx = t.clientX - touchStart.current.x;
+    const dy = Math.abs(t.clientY - touchStart.current.y);
+    touchStart.current = null;
+
+    if (dy > SWIPE_Y_LIMIT || Math.abs(dx) < SWIPE_THRESHOLD) return;
+
+    const idx    = CATEGORY_ORDER.indexOf(category);
+    if (dx < 0 && idx < CATEGORY_ORDER.length - 1) {
+      setSwipeDir('left');
+      changeCategory(CATEGORY_ORDER[idx + 1]);
+    } else if (dx > 0 && idx > 0) {
+      setSwipeDir('right');
+      changeCategory(CATEGORY_ORDER[idx - 1]);
+    }
+    setTimeout(() => setSwipeDir(null), 320);
+  }, [category]);
+
+  /* ─── Helpers ────────────────────────────────────────────────────────────── */
+  const changeCategory = (cat) => {
+    clearSearch();
+    setCategory(cat);
+  };
+
   const toggleBookmark = (article) => {
     setBookmarks(prev => {
       const exists = prev.some(b => b.article_id === article.article_id);
@@ -30,61 +72,66 @@ export default function HomePage() {
     });
   };
 
-  /* ─── Displayed articles: search results OR category feed ──────────────── */
   const displayArticles = query.trim().length >= 2 ? results : articles;
   const isLoading       = query.trim().length >= 2 ? searching : loading;
-
-  /* ─── Category change clears search ───────────────────────────────────── */
-  const handleCategoryChange = (cat) => {
-    clearSearch();
-    setCategory(cat);
-  };
+  const swipeClass      = swipeDir === 'left' ? 'animate-swipe-left'
+                        : swipeDir === 'right' ? 'animate-swipe-right' : '';
 
   return (
     <div className="min-h-dvh bg-newsprint">
-      {/* Sticky header */}
+
+      {/* ── Header (handles its own safe-area-inset-top padding internally) ── */}
       <Header
         onSearch={search}
         onClearSearch={clearSearch}
         isSearching={searching}
       />
 
-      {/* Install banner */}
+      {/* ── Install banner ───────────────────────────────────────────────── */}
       {showBanner && (
-        <InstallBanner
-          isIOS={isIOS}
-          onInstall={triggerInstall}
-          onDismiss={dismiss}
-        />
+        <InstallBanner isIOS={isIOS} onInstall={triggerInstall} onDismiss={dismiss} />
       )}
 
-      {/* Category bar */}
+      {/*
+        ── Desktop category bar
+        Uses CSS var(--header-h) so it sticks BELOW the header even on notched phones.
+        --header-h = 3.5rem (h-14) + env(safe-area-inset-top), set in index.html <style>.
+      */}
       {!query && (
-        <div className="sticky top-14 z-20 bg-newsprint/90 backdrop-blur-md border-b border-rule">
-          <CategoryBar active={category} onChange={handleCategoryChange} />
+        <div
+          className="hidden md:block sticky z-20 bg-newsprint/90 backdrop-blur-md border-b border-rule"
+          style={{ top: 'var(--header-h, 3.5rem)' }}
+        >
+          <CategoryBar active={category} onChange={changeCategory} />
         </div>
       )}
 
-      {/* Search heading */}
+      {/* ── Mobile current-category pill + swipe hint ─────────────────────── */}
+      {!query && (
+        <div className="md:hidden px-4 pt-3 pb-1 flex items-center gap-2">
+          <span className="text-xs font-mono text-slate capitalize">
+            {CATEGORY_ORDER.indexOf(category) > 0 ? '← ' : ''}
+            {category === 'top' ? 'Top Stories' : category}
+            {CATEGORY_ORDER.indexOf(category) < CATEGORY_ORDER.length - 1 ? ' →' : ''}
+          </span>
+          <SwipeHint />
+        </div>
+      )}
+
+      {/* ── Search heading ────────────────────────────────────────────────── */}
       {query && (
         <div className="px-4 py-3 flex items-center gap-3">
           <span className="text-sm font-mono text-slate">
-            {searching
-              ? 'Searching…'
-              : `${results.length} result${results.length !== 1 ? 's' : ''} for`
-            }
+            {searching ? 'Searching…' : `${results.length} result${results.length !== 1 ? 's' : ''} for`}
           </span>
           <span className="text-sm font-body font-semibold text-ink">"{query}"</span>
-          <button
-            onClick={clearSearch}
-            className="ml-auto text-xs text-cobalt font-body hover:underline"
-          >
+          <button onClick={clearSearch} className="ml-auto text-xs text-cobalt font-body hover:underline">
             Clear
           </button>
         </div>
       )}
 
-      {/* Error banner */}
+      {/* ── Error banner ──────────────────────────────────────────────────── */}
       {error && (
         <div className="mx-4 mt-2 bg-scarlet/8 border border-scarlet/20 rounded-xl px-4 py-3 flex items-center gap-3">
           <span className="text-scarlet text-lg">⚠️</span>
@@ -98,7 +145,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Bookmarks shelf — shown only when no search and category tab doesn't hide it */}
+      {/* ── Bookmarks shelf ───────────────────────────────────────────────── */}
       {!query && bookmarks.length > 0 && (
         <BookmarksShelf
           bookmarks={bookmarks}
@@ -107,30 +154,31 @@ export default function HomePage() {
         />
       )}
 
-      {/* Main bento grid */}
-      <main>
-        <BentoGrid
-          articles={displayArticles}
-          loading={isLoading}
-          onArticleClick={setSelectedArticle}
-          bookmarks={bookmarks}
-          onBookmark={toggleBookmark}
-        />
+      {/* ── Main swipeable content ────────────────────────────────────────── */}
+      <main
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        /* Bottom padding = BottomNav height + safe area; CSS var handles notched phones */
+        style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}
+        className="md:pb-8"
+      >
+        <div className={swipeClass}>
+          <BentoGrid
+            articles={displayArticles}
+            loading={isLoading}
+            onArticleClick={setSelectedArticle}
+            bookmarks={bookmarks}
+            onBookmark={toggleBookmark}
+          />
+        </div>
       </main>
 
-      {/* Refresh FAB (mobile) */}
+      {/* ── Desktop refresh FAB ───────────────────────────────────────────── */}
       {!isLoading && (
         <button
           onClick={refresh}
           aria-label="Refresh"
-          className="
-            fixed bottom-6 right-4 z-30
-            md:hidden
-            w-12 h-12 rounded-full
-            bg-ink text-white shadow-lg shadow-black/25
-            flex items-center justify-center
-            active:scale-90 transition-transform
-          "
+          className="fixed bottom-6 right-4 z-30 hidden md:flex w-12 h-12 rounded-full bg-ink text-white shadow-lg shadow-black/25 items-center justify-center active:scale-90 transition-transform"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -138,7 +186,10 @@ export default function HomePage() {
         </button>
       )}
 
-      {/* Article reader */}
+      {/* ── Floating bottom nav (mobile only) ────────────────────────────── */}
+      <BottomNav active={category} onChange={changeCategory} />
+
+      {/* ── Article reader ────────────────────────────────────────────────── */}
       {selectedArticle && (
         <ArticleReader
           article={selectedArticle}
@@ -151,28 +202,32 @@ export default function HomePage() {
   );
 }
 
-/* ─── Bookmarks horizontal shelf ─────────────────────────────────────────── */
+/* ─── Swipe hint ─────────────────────────────────────────────────────────── */
+function SwipeHint() {
+  const seen = sessionStorage.getItem('nw_swipe_seen');
+  if (seen) return null;
+  return (
+    <span
+      onClick={() => sessionStorage.setItem('nw_swipe_seen', '1')}
+      className="ml-auto flex items-center gap-1 text-[10px] font-mono text-slate/50 bg-parchment border border-rule px-2 py-0.5 rounded-full select-none cursor-pointer"
+    >
+      ← swipe to switch →
+    </span>
+  );
+}
+
+/* ─── Bookmarks shelf ────────────────────────────────────────────────────── */
 function BookmarksShelf({ bookmarks, onOpen, onRemove }) {
   const [open, setOpen] = useState(false);
-
   return (
     <section className="border-b border-rule bg-parchment">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full px-4 py-2.5 flex items-center gap-2 text-left"
-      >
+      <button onClick={() => setOpen(o => !o)} className="w-full px-4 py-2.5 flex items-center gap-2 text-left">
         <span className="text-sm font-mono text-slate">📌</span>
-        <span className="text-sm font-body font-medium text-ink">
-          Bookmarks ({bookmarks.length})
-        </span>
-        <svg
-          className={`w-4 h-4 text-slate ml-auto transition-transform ${open ? 'rotate-180' : ''}`}
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
-        >
+        <span className="text-sm font-body font-medium text-ink">Bookmarks ({bookmarks.length})</span>
+        <svg className={`w-4 h-4 text-slate ml-auto transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
-
       {open && (
         <div className="flex gap-3 overflow-x-auto no-scrollbar px-4 pb-3 animate-fade-in">
           {bookmarks.map(article => (
@@ -181,9 +236,7 @@ function BookmarksShelf({ bookmarks, onOpen, onRemove }) {
               className="shrink-0 w-52 bg-white rounded-xl border border-rule p-3 cursor-pointer hover:shadow-sm transition-shadow"
               onClick={() => onOpen(article)}
             >
-              <p className="text-xs font-display font-semibold text-ink line-clamp-2 mb-2 leading-snug">
-                {article.title}
-              </p>
+              <p className="text-xs font-display font-semibold text-ink line-clamp-2 mb-2 leading-snug">{article.title}</p>
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono text-slate truncate">{article.source_name}</span>
                 <button

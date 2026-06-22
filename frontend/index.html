@@ -2,14 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      viewport-fit=cover → content FILLS behind notch/Dynamic Island/home bar.
+      We use env(safe-area-inset-*) in CSS to nudge content back into the safe zone.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- PWA essentials -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#1C1917" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <!--
+      black-translucent: status bar is transparent so our header
+      extends behind the notch and colours it correctly.
+    -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Glancify" />
 
     <!-- Icons -->
@@ -23,10 +31,33 @@
     <meta property="og:description" content="Read the world's stories, beautifully." />
     <meta property="og:type" content="website" />
 
-    <!-- Fonts: Fraunces (display) + DM Sans (body) + DM Mono (meta) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!--
+      Critical safe-area CSS — injected before React boots so there's
+      zero layout shift on notched devices on first paint.
+    -->
+    <style>
+      :root {
+        --sat: env(safe-area-inset-top,    0px);
+        --sar: env(safe-area-inset-right,  0px);
+        --sab: env(safe-area-inset-bottom, 0px);
+        --sal: env(safe-area-inset-left,   0px);
+        /* Shorthand: full header height = 56px (h-14) + status bar */
+        --header-h: calc(3.5rem + var(--sat));
+      }
+
+      /* Prevent body content bleeding under notch or home bar */
+      body {
+        background-color: #F7F6F3;
+        padding-left:  var(--sal);
+        padding-right: var(--sar);
+        /* No padding-top: the sticky header handles that */
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

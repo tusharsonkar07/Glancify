@@ -176,3 +176,80 @@ nav[aria-label="News categories"].fixed button {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   APPEND EVERYTHING BELOW THIS LINE TO THE BOTTOM OF YOUR src/index.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Safe-area utility classes ──────────────────────────────────────────── */
+.safe-top    { padding-top:    env(safe-area-inset-top,    0px); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.safe-left   { padding-left:   env(safe-area-inset-left,   0px); }
+.safe-right  { padding-right:  env(safe-area-inset-right,  0px); }
+
+/* ─── Sticky header: accounts for the notch / Dynamic Island ─────────────── */
+/*
+   The <header> has `padding-top: env(safe-area-inset-top)`.
+   Anything that uses `top-14` (Tailwind h-14 = 3.5rem) to
+   stick below the header must now use --header-h instead.
+*/
+.top-below-header {
+  top: var(--header-h, 3.5rem);
+}
+
+/* ─── Bottom nav safe area ───────────────────────────────────────────────── */
+/*
+   The floating BottomNav sits `bottom-4` + home-indicator clearance.
+   Extra bottom padding ensures the pill never overlaps the swipe bar.
+*/
+.bottom-nav-safe {
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+/* ─── Main content bottom clearance ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  main {
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ─── Bottom sheet: handle the home indicator on iPhone ─────────────────── */
+.bottom-sheet {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ─── Swipe animation keyframes ──────────────────────────────────────────── */
+@keyframes swipeInFromRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes swipeInFromLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-swipe-left  { animation: swipeInFromRight 0.28s cubic-bezier(0.22,1,0.36,1); }
+.animate-swipe-right { animation: swipeInFromLeft  0.28s cubic-bezier(0.22,1,0.36,1); }
+
+/* ─── Landscape: side insets for full-bleed elements ────────────────────── */
+@media (orientation: landscape) and (max-width: 932px) {
+  .bento-grid,
+  .max-w-7xl { 
+    padding-left:  max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* ─── Prevent bottom nav from being tapped through bottom sheet ─────────── */
+.bottom-sheet-overlay ~ nav {
+  pointer-events: none;
+}
+
+/* ─── Tap highlight off for nav buttons ──────────────────────────────────── */
+nav button {
+  -webkit-tap-highlight-color: transparent;
+}
