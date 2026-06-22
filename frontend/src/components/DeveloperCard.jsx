@@ -174,7 +174,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
                 letterSpacing: '0.04em',
                 lineHeight:    1.4,
               }}>
-                CREATOR · DEVELOPER
+                DEVELOPER
               </p>
               <p style={{
                 fontFamily:    '"DM Mono", monospace',
