@@ -14,7 +14,11 @@ function relativeTime(dateStr) {
 }
 
 export default function ArticleReader({ article, onClose, bookmarked, onBookmark }) {
-  const panelRef = useRef(null);
+  const panelRef   = useRef(null);
+  const overlayRef = useRef(null);
+  const dragRef    = useRef({ dragging: null, startY: 0, startX: 0, startScrollTop: 0, lastDelta: 0 });
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   // Trap focus and handle Escape key
   useEffect(() => {
@@ -28,6 +32,96 @@ export default function ArticleReader({ article, onClose, bookmarked, onBookmark
       document.body.style.overflow = '';
     };
   }, [article, onClose]);
+
+  // Swipe-down-to-close — mobile bottom sheet only.
+  // We manipulate the DOM directly (instead of React state) so the panel
+  // tracks the finger 1:1 every frame without re-rendering the component.
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!article || !panel || !isMobile) return;
+
+    const CLOSE_THRESHOLD = 110; // px of downward drag needed to dismiss
+    const MOVE_THRESHOLD  = 6;   // px of movement before we decide intent
+
+    const setDragPosition = (deltaY) => {
+      panel.style.transition = 'none';
+      panel.style.transform  = `translateY(${deltaY}px)`;
+      if (overlayRef.current) {
+        overlayRef.current.style.transition = 'none';
+        overlayRef.current.style.opacity = String(Math.max(0, 1 - deltaY / 400));
+      }
+    };
+
+    const snapBack = () => {
+      panel.style.transition = 'transform 0.25s cubic-bezier(0.22,1,0.36,1)';
+      panel.style.transform  = '';
+      if (overlayRef.current) {
+        overlayRef.current.style.transition = 'opacity 0.25s ease';
+        overlayRef.current.style.opacity = '';
+      }
+    };
+
+    const onTouchStart = (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      dragRef.current = {
+        dragging: null,
+        startY: t.clientY,
+        startX: t.clientX,
+        startScrollTop: panel.scrollTop,
+        lastDelta: 0,
+      };
+    };
+
+    const onTouchMove = (e) => {
+      const ds = dragRef.current;
+      if (ds.startY === undefined) return;
+      const t = e.touches[0];
+      const deltaY = t.clientY - ds.startY;
+      const deltaX = t.clientX - ds.startX;
+
+      // Decide gesture intent once, the first time the finger moves enough.
+      if (ds.dragging === null) {
+        if (Math.abs(deltaY) < MOVE_THRESHOLD && Math.abs(deltaX) < MOVE_THRESHOLD) return;
+        const isDownward = deltaY > 0;
+        const isVertical  = Math.abs(deltaY) > Math.abs(deltaX);
+        // Only start a close-drag if the sheet is already scrolled to the
+        // top — otherwise this is just the user scrolling the article.
+        ds.dragging = isDownward && isVertical && ds.startScrollTop <= 0;
+      }
+
+      if (ds.dragging) {
+        e.preventDefault();
+        const clamped = Math.max(0, deltaY);
+        ds.lastDelta = clamped;
+        setDragPosition(clamped);
+      }
+    };
+
+    const onTouchEnd = () => {
+      const ds = dragRef.current;
+      if (ds.dragging) {
+        if (ds.lastDelta > CLOSE_THRESHOLD) {
+          onClose();
+        } else {
+          snapBack();
+        }
+      }
+      dragRef.current = { dragging: null, startY: 0, startX: 0, startScrollTop: 0, lastDelta: 0 };
+    };
+
+    panel.addEventListener('touchstart', onTouchStart, { passive: true });
+    panel.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    panel.addEventListener('touchend',   onTouchEnd,   { passive: true });
+    panel.addEventListener('touchcancel', onTouchEnd,  { passive: true });
+
+    return () => {
+      panel.removeEventListener('touchstart', onTouchStart);
+      panel.removeEventListener('touchmove',  onTouchMove);
+      panel.removeEventListener('touchend',   onTouchEnd);
+      panel.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [article, onClose, isMobile]);
 
   if (!article) return null;
 
@@ -48,12 +142,11 @@ export default function ArticleReader({ article, onClose, bookmarked, onBookmark
     alert('Link copied to clipboard!');
   };
 
-  const isMobile = window.innerWidth < 768;
-
   return (
     <>
       {/* Backdrop */}
       <div
+        ref={overlayRef}
         className="bottom-sheet-overlay animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
