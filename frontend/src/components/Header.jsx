@@ -45,12 +45,12 @@ export default function Header({ onSearch, onClearSearch, isSearching }) {
             <a href="/" className="flex items-center gap-2 shrink-0">
               <img
                 src="/icons/glancify mobile logo.png"
-                alt="Glancify"
+                alt="glancify"
                 className="w-6 h-6 rounded-md"
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
               <span className="font-display font-bold text-xl text-ink tracking-tight">
-                Glanc<span className="text-scarlet">ify</span>
+                glanc<span className="text-scarlet">ify</span>
               </span>
             </a>
           )}
