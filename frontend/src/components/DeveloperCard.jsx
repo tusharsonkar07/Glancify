@@ -82,12 +82,12 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         className="dc-card"
         style={{
           position:     'fixed',
-          top:          anchor === 'header' ? 'calc(3.5rem + env(safe-area-inset-top, 0px) + 0.5rem) !important' : '50%',
-          left:         anchor === 'header' ? '50% !important' : '50%',
-          transform:    anchor === 'header' ? 'translateX(-50%) !important' : 'translate(-50%, -50%)',
+          top:          anchor === 'header' ? 'calc(3.5rem + env(safe-area-inset-top, 0px) + 0.5rem)' : '50%',
+          left:         '50%',
+          transform:    anchor === 'header' ? 'translateX(-50%)' : 'translate(-50%, -50%)',
           zIndex:       61,
-          width:        anchor === 'header' ? '280px !important' : 'min(340px, calc(100vw - 2rem))',
-          maxWidth:     anchor === 'header' ? '280px !important' : 'none',
+          width:        anchor === 'header' ? '280px' : 'min(340px, calc(100vw - 2rem))',
+          maxWidth:     anchor === 'header' ? '280px' : 'none',
           background:   '#FFFFFF',
           border:       '1px solid #E7E5E4',
           borderRadius: '1.25rem',
