@@ -229,23 +229,9 @@ export default function IntroPage({ onComplete }) {
           </div>
         </div>
 
-        {/* Rule + footer */}
-        <div
-          className="intro-word relative z-10 px-6 pb-5"
-          style={{ animationDelay: '1.2s' }}
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex-1 h-px bg-rule" />
-            <img
-              src="/icons/glancify mobile logo.png"
-              alt=""
-              className="w-4 h-4 opacity-30"
-              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-            />
-            <div className="flex-1 h-px bg-rule" />
-          </div>
-          <Footer />
-        </div>
+        {/* Attribution handled by the persistent MakerBadge rendered in App.jsx.
+            The old footer block was being pushed below the viewport on small phones,
+            so it's been removed here. The badge is always visible instead. */}
       </div>
     </>
   );
