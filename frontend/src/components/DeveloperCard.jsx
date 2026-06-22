@@ -53,8 +53,8 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         }
         @media (max-width: 768px) {
           .dc-card {
-            width: 180px !important;
-            max-width: 180px !important;
+            width: 280px !important;
+            max-width: 280px !important;
           }
         }
       `}</style>
@@ -83,11 +83,11 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         style={{
           position:     'fixed',
           top:          anchor === 'header' ? 'calc(3.5rem + env(safe-area-inset-top, 0px) + 0.5rem) !important' : '50%',
-          left:         anchor === 'header' ? '0.5rem !important' : '50%',
-          transform:    anchor === 'header' ? 'none !important' : 'translate(-50%, -50%)',
+          left:         anchor === 'header' ? '50% !important' : '50%',
+          transform:    anchor === 'header' ? 'translateX(-50%) !important' : 'translate(-50%, -50%)',
           zIndex:       61,
-          width:        anchor === 'header' ? '180px !important' : 'min(340px, calc(100vw - 2rem))',
-          maxWidth:     anchor === 'header' ? '180px !important' : 'none',
+          width:        anchor === 'header' ? '280px !important' : 'min(340px, calc(100vw - 2rem))',
+          maxWidth:     anchor === 'header' ? '280px !important' : 'none',
           background:   '#FFFFFF',
           border:       '1px solid #E7E5E4',
           borderRadius: '1.25rem',
@@ -125,16 +125,16 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         </button>
 
         {/* ── Header section ───────────────────────────────────────── */}
-        <div style={{ padding: anchor === 'header' ? '16px 14px 12px' : '28px 24px 20px' }}>
+        <div style={{ padding: anchor === 'header' ? '20px 18px 16px' : '28px 24px 20px' }}>
 
           {/* Monogram + name row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: anchor === 'header' ? '10px' : '14px', marginBottom: anchor === 'header' ? '10px' : '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: anchor === 'header' ? '12px' : '14px', marginBottom: anchor === 'header' ? '12px' : '16px' }}>
             {/* Avatar — monogram initials */}
             <div
               aria-hidden
               style={{
-                width:        anchor === 'header' ? '36px' : '52px',
-                height:       anchor === 'header' ? '36px' : '52px',
+                width:        anchor === 'header' ? '42px' : '52px',
+                height:       anchor === 'header' ? '42px' : '52px',
                 borderRadius: '50%',
                 background:   'linear-gradient(135deg, #1C1917 0%, #374151 100%)',
                 display:      'flex',
@@ -147,7 +147,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
               <span style={{
                 fontFamily: '"Fraunces", Georgia, serif',
                 fontWeight: 700,
-                fontSize:   anchor === 'header' ? '0.8rem' : '1.1rem',
+                fontSize:   anchor === 'header' ? '0.9rem' : '1.1rem',
                 color:      '#FFFFFF',
                 letterSpacing: '-0.02em',
                 lineHeight: 1,
@@ -160,16 +160,16 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
               <p style={{
                 fontFamily: '"Fraunces", Georgia, serif',
                 fontWeight: 700,
-                fontSize:   anchor === 'header' ? '0.9rem' : '1.1rem',
+                fontSize:   anchor === 'header' ? '1rem' : '1.1rem',
                 color:      '#1C1917',
                 lineHeight: 1.2,
-                marginBottom: '2px',
+                marginBottom: '3px',
               }}>
                 Tushar Sonkar
               </p>
               <p style={{
                 fontFamily:    '"DM Mono", monospace',
-                fontSize:      anchor === 'header' ? '0.55rem' : '0.68rem',
+                fontSize:      anchor === 'header' ? '0.6rem' : '0.68rem',
                 color:         '#78716C',
                 letterSpacing: '0.04em',
                 lineHeight:    1.4,
@@ -178,10 +178,10 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
               </p>
               <p style={{
                 fontFamily:    '"DM Mono", monospace',
-                fontSize:      anchor === 'header' ? '0.55rem' : '0.68rem',
+                fontSize:      anchor === 'header' ? '0.6rem' : '0.68rem',
                 color:         '#DC2626',
                 letterSpacing: '0.04em',
-                marginTop:     '1px',
+                marginTop:     '2px',
               }}>
                 GLANCIFY
               </p>
@@ -194,12 +194,12 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
           {/* Quote */}
           <blockquote style={{
             fontFamily:  '"DM Sans", system-ui, sans-serif',
-            fontSize:    anchor === 'header' ? '0.7rem' : '0.875rem',
+            fontSize:    anchor === 'header' ? '0.75rem' : '0.875rem',
             color:       '#78716C',
             fontStyle:   'italic',
             lineHeight:  1.65,
-            margin:      '0 0 ' + (anchor === 'header' ? '12px' : '20px'),
-            paddingLeft: anchor === 'header' ? '8px' : '12px',
+            margin:      '0 0 ' + (anchor === 'header' ? '14px' : '20px'),
+            paddingLeft: anchor === 'header' ? '10px' : '12px',
             borderLeft:  '2px solid #E7E5E4',
           }}>
             "I believe great products are built by people who care deeply — about code, craft, and the people who use it."
@@ -215,16 +215,16 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
               display:        'flex',
               alignItems:     'center',
               justifyContent: 'center',
-              gap:            '6px',
+              gap:            '8px',
               width:          '100%',
-              padding:        anchor === 'header' ? '8px 0' : '10px 0',
+              padding:        anchor === 'header' ? '9px 0' : '10px 0',
               borderRadius:   '10px',
               border:         '1.5px solid #1D4ED8',
               background:     'transparent',
               color:          '#1D4ED8',
               fontFamily:     '"DM Sans", system-ui, sans-serif',
               fontWeight:     600,
-              fontSize:       anchor === 'header' ? '0.75rem' : '0.875rem',
+              fontSize:       anchor === 'header' ? '0.8rem' : '0.875rem',
               textDecoration: 'none',
               cursor:         'pointer',
               transition:     'background 0.18s, color 0.18s, border-color 0.18s',
@@ -238,7 +238,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
 
         {/* ── Footer section ───────────────────────────────────────── */}
         <div style={{
-          padding:    anchor === 'header' ? '8px 12px' : '12px 24px',
+          padding:    anchor === 'header' ? '10px 16px' : '12px 24px',
           background: '#F7F6F3',
           borderTop:  '1px solid #E7E5E4',
           display:    'flex',
@@ -247,7 +247,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         }}>
           <p style={{
             fontFamily:    '"DM Mono", monospace',
-            fontSize:      anchor === 'header' ? '0.55rem' : '0.65rem',
+            fontSize:      anchor === 'header' ? '0.58rem' : '0.65rem',
             color:         '#A8A29E',
             letterSpacing: '0.04em',
           }}>
@@ -255,7 +255,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
           </p>
           <p style={{
             fontFamily:    '"DM Mono", monospace',
-            fontSize:      anchor === 'header' ? '0.55rem' : '0.65rem',
+            fontSize:      anchor === 'header' ? '0.58rem' : '0.65rem',
             color:         '#A8A29E',
             letterSpacing: '0.04em',
           }}>
