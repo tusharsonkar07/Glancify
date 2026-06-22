@@ -5,8 +5,9 @@ import BottomNav     from '../components/BottomNav';
 import BentoGrid     from '../components/BentoGrid';
 import ArticleReader from '../components/ArticleReader';
 import InstallBanner from '../components/InstallBanner';
+import { Footer }    from '../pages/IntroPage';          // shared footer
 import { useNews, useSearch } from '../hooks/useNews';
-import { usePWA }   from '../hooks/usePWA';
+import { usePWA }    from '../hooks/usePWA';
 
 const CATEGORY_ORDER = ['top', 'technology', 'business', 'sports', 'entertainment', 'science', 'health'];
 const SWIPE_THRESHOLD = 52;
@@ -24,7 +25,7 @@ export default function HomePage() {
   const { query, results, loading: searching, search, clearSearch } = useSearch();
   const { showBanner, isIOS, triggerInstall, dismiss } = usePWA();
 
-  /* ─── Touch swipe ───────────────────────────────────────────────────────── */
+  /* ─── Swipe gesture ─────────────────────────────────────────────────────── */
   const touchStart  = useRef(null);
   const touchActive = useRef(false);
 
@@ -41,10 +42,8 @@ export default function HomePage() {
     const dx = t.clientX - touchStart.current.x;
     const dy = Math.abs(t.clientY - touchStart.current.y);
     touchStart.current = null;
-
     if (dy > SWIPE_Y_LIMIT || Math.abs(dx) < SWIPE_THRESHOLD) return;
-
-    const idx    = CATEGORY_ORDER.indexOf(category);
+    const idx = CATEGORY_ORDER.indexOf(category);
     if (dx < 0 && idx < CATEGORY_ORDER.length - 1) {
       setSwipeDir('left');
       changeCategory(CATEGORY_ORDER[idx + 1]);
@@ -55,11 +54,8 @@ export default function HomePage() {
     setTimeout(() => setSwipeDir(null), 320);
   }, [category]);
 
-  /* ─── Helpers ────────────────────────────────────────────────────────────── */
-  const changeCategory = (cat) => {
-    clearSearch();
-    setCategory(cat);
-  };
+  /* ─── Helpers ───────────────────────────────────────────────────────────── */
+  const changeCategory = (cat) => { clearSearch(); setCategory(cat); };
 
   const toggleBookmark = (article) => {
     setBookmarks(prev => {
@@ -74,29 +70,21 @@ export default function HomePage() {
 
   const displayArticles = query.trim().length >= 2 ? results : articles;
   const isLoading       = query.trim().length >= 2 ? searching : loading;
-  const swipeClass      = swipeDir === 'left' ? 'animate-swipe-left'
+  const swipeClass      = swipeDir === 'left'  ? 'animate-swipe-left'
                         : swipeDir === 'right' ? 'animate-swipe-right' : '';
 
   return (
     <div className="min-h-dvh bg-newsprint">
 
-      {/* ── Header (handles its own safe-area-inset-top padding internally) ── */}
-      <Header
-        onSearch={search}
-        onClearSearch={clearSearch}
-        isSearching={searching}
-      />
+      {/* Header */}
+      <Header onSearch={search} onClearSearch={clearSearch} isSearching={searching} />
 
-      {/* ── Install banner ───────────────────────────────────────────────── */}
+      {/* Install banner */}
       {showBanner && (
         <InstallBanner isIOS={isIOS} onInstall={triggerInstall} onDismiss={dismiss} />
       )}
 
-      {/*
-        ── Desktop category bar
-        Uses CSS var(--header-h) so it sticks BELOW the header even on notched phones.
-        --header-h = 3.5rem (h-14) + env(safe-area-inset-top), set in index.html <style>.
-      */}
+      {/* Desktop category bar */}
       {!query && (
         <div
           className="hidden md:block sticky z-20 bg-newsprint/90 backdrop-blur-md border-b border-rule"
@@ -106,7 +94,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── Mobile current-category pill + swipe hint ─────────────────────── */}
+      {/* Mobile: current category + swipe hint */}
       {!query && (
         <div className="md:hidden px-4 pt-3 pb-1 flex items-center gap-2">
           <span className="text-xs font-mono text-slate capitalize">
@@ -118,9 +106,9 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── Search heading ────────────────────────────────────────────────── */}
+      {/* Search heading */}
       {query && (
-        <div className="px-4 py-3 flex items-center gap-3">
+        <div className="px-4 py-3 flex items-center gap-3 flex-wrap">
           <span className="text-sm font-mono text-slate">
             {searching ? 'Searching…' : `${results.length} result${results.length !== 1 ? 's' : ''} for`}
           </span>
@@ -131,7 +119,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── Error banner ──────────────────────────────────────────────────── */}
+      {/* Error banner */}
       {error && (
         <div className="mx-4 mt-2 bg-scarlet/8 border border-scarlet/20 rounded-xl px-4 py-3 flex items-center gap-3">
           <span className="text-scarlet text-lg">⚠️</span>
@@ -145,7 +133,7 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* ── Bookmarks shelf ───────────────────────────────────────────────── */}
+      {/* Bookmarks shelf */}
       {!query && bookmarks.length > 0 && (
         <BookmarksShelf
           bookmarks={bookmarks}
@@ -154,11 +142,10 @@ export default function HomePage() {
         />
       )}
 
-      {/* ── Main swipeable content ────────────────────────────────────────── */}
+      {/* Main swipeable content */}
       <main
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        /* Bottom padding = BottomNav height + safe area; CSS var handles notched phones */
         style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}
         className="md:pb-8"
       >
@@ -171,14 +158,31 @@ export default function HomePage() {
             onBookmark={toggleBookmark}
           />
         </div>
+
+        {/* ── Page footer — only shown when there are articles loaded ────── */}
+        {!isLoading && displayArticles.length > 0 && (
+          <div className="max-w-7xl mx-auto px-4 pt-2 pb-4">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex-1 h-px bg-rule" />
+              <img
+                src="/icons/glancify mobile logo.png"
+                alt=""
+                className="w-3.5 h-3.5 opacity-25"
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+              />
+              <div className="flex-1 h-px bg-rule" />
+            </div>
+            <Footer />
+          </div>
+        )}
       </main>
 
-      {/* ── Desktop refresh FAB ───────────────────────────────────────────── */}
+      {/* Desktop refresh FAB */}
       {!isLoading && (
         <button
           onClick={refresh}
           aria-label="Refresh"
-          className="fixed bottom-6 right-4 z-30 hidden md:flex w-12 h-12 rounded-full bg-ink text-white shadow-lg shadow-black/25 items-center justify-center active:scale-90 transition-transform"
+          className="fixed bottom-6 right-4 z-30 hidden md:flex w-12 h-12 rounded-full bg-ink text-white shadow-lg shadow-black/20 items-center justify-center active:scale-90 transition-transform"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -186,10 +190,10 @@ export default function HomePage() {
         </button>
       )}
 
-      {/* ── Floating bottom nav (mobile only) ────────────────────────────── */}
+      {/* Floating bottom nav (mobile) */}
       <BottomNav active={category} onChange={changeCategory} />
 
-      {/* ── Article reader ────────────────────────────────────────────────── */}
+      {/* Article reader */}
       {selectedArticle && (
         <ArticleReader
           article={selectedArticle}
@@ -221,10 +225,16 @@ function BookmarksShelf({ bookmarks, onOpen, onRemove }) {
   const [open, setOpen] = useState(false);
   return (
     <section className="border-b border-rule bg-parchment">
-      <button onClick={() => setOpen(o => !o)} className="w-full px-4 py-2.5 flex items-center gap-2 text-left">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full px-4 py-2.5 flex items-center gap-2 text-left"
+      >
         <span className="text-sm font-mono text-slate">📌</span>
         <span className="text-sm font-body font-medium text-ink">Bookmarks ({bookmarks.length})</span>
-        <svg className={`w-4 h-4 text-slate ml-auto transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+        <svg
+          className={`w-4 h-4 text-slate ml-auto transition-transform ${open ? 'rotate-180' : ''}`}
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
+        >
           <path strokeLinecap="round" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
@@ -236,7 +246,9 @@ function BookmarksShelf({ bookmarks, onOpen, onRemove }) {
               className="shrink-0 w-52 bg-white rounded-xl border border-rule p-3 cursor-pointer hover:shadow-sm transition-shadow"
               onClick={() => onOpen(article)}
             >
-              <p className="text-xs font-display font-semibold text-ink line-clamp-2 mb-2 leading-snug">{article.title}</p>
+              <p className="text-xs font-display font-semibold text-ink line-clamp-2 mb-2 leading-snug">
+                {article.title}
+              </p>
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono text-slate truncate">{article.source_name}</span>
                 <button
