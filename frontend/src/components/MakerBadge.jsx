@@ -50,7 +50,7 @@ export default function MakerBadge({ onClick }) {
           whiteSpace: 'nowrap',
         }}
       >
-        Tushar Sonkar
+        Developed by...
       </span>
     </button>
   );

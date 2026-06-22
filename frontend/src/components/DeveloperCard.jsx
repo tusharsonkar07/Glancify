@@ -83,7 +83,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         style={{
           position:     'fixed',
           top:          anchor === 'header' ? 'calc(3.5rem + env(safe-area-inset-top, 0px) + 0.5rem)' : '50%',
-          left:         anchor === 'header' ? 'calc(50% - 76px)' : '50%',
+          left:         anchor === 'header' ? 'calc(50% - 96px)' : '50%',
           transform:    anchor === 'header' ? 'translateX(-50%)' : 'translate(-50%, -50%)',
           zIndex:       61,
           width:        anchor === 'header' ? '280px' : 'min(340px, calc(100vw - 2rem))',
@@ -202,7 +202,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
             paddingLeft: anchor === 'header' ? '10px' : '12px',
             borderLeft:  '2px solid #E7E5E4',
           }}>
-            "I believe great products are built by people who care deeply — about code, craft, and the people who use it."
+            "Curious mind, busy hands, always up for a good conversation about ideas — let's connect!"
           </blockquote>
 
           {/* LinkedIn CTA */}
@@ -232,7 +232,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
             }}
           >
             <LinkedInIcon />
-            Connect on LinkedIn
+            Connect with Me
           </a>
         </div>
 
@@ -259,7 +259,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
             color:         '#A8A29E',
             letterSpacing: '0.04em',
           }}>
-            Glancify · 2025–26
+            glancify · 2026
           </p>
         </div>
       </div>
