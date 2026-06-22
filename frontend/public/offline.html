@@ -2,26 +2,85 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Glancify — Offline</title>
   <style>
-    body { font-family: 'DM Sans', system-ui, sans-serif; background: #F7F6F3;
-           display: flex; align-items: center; justify-content: center;
-           min-height: 100vh; margin: 0; color: #1C1917; }
-    .card { text-align: center; padding: 2rem; max-width: 360px; }
-    .icon { font-size: 3rem; margin-bottom: 1rem; }
-    h1 { font-family: 'Fraunces', Georgia, serif; font-size: 1.75rem; margin: 0 0 0.5rem; }
-    p  { color: #78716C; margin: 0 0 1.5rem; line-height: 1.6; }
-    button { background: #1C1917; color: #fff; border: none; padding: 0.75rem 1.5rem;
-             border-radius: 8px; font-size: 0.95rem; cursor: pointer; }
-    button:hover { background: #374151; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #F7F6F3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      color: #1C1917;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right)
+               env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+
+    .card {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    h1 {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      color: #78716C;
+      line-height: 1.65;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hint {
+      font-size: 0.8rem;
+      color: #A8A29E;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    button {
+      background: #1C1917;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      width: 100%;
+      max-width: 220px;
+    }
+
+    button:hover { opacity: 0.85; }
+    button:active { opacity: 0.7; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="icon">📡</div>
-    <h1>You're offline</h1>
-    <p>Glancify needs a connection to load the latest stories. Check your network and try again.</p>
+    <span class="icon">📡</span>
+    <h1>No connection</h1>
+    <p>We couldn't reach the internet right now.</p>
+    <p class="hint">
+      This page only appears if the app hasn't fully loaded once before.
+      Once you've visited Glancify online, it works offline automatically.
+    </p>
     <button onclick="window.location.reload()">Try again</button>
   </div>
 </body>
