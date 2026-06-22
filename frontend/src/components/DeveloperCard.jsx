@@ -83,7 +83,7 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
         style={{
           position:     'fixed',
           top:          anchor === 'header' ? 'calc(3.5rem + env(safe-area-inset-top, 0px) + 0.5rem)' : '50%',
-          left:         '50%',
+          left:         anchor === 'header' ? 'calc(50% - 26px)' : '50%',
           transform:    anchor === 'header' ? 'translateX(-50%)' : 'translate(-50%, -50%)',
           zIndex:       61,
           width:        anchor === 'header' ? '280px' : 'min(340px, calc(100vw - 2rem))',
