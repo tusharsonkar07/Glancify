@@ -7,7 +7,7 @@
  *   - Offline page   → served from cache when network fails
  */
 
-const CACHE_VERSION   = 'newswave-v1';
+const CACHE_VERSION   = 'glancify-v1';
 const STATIC_CACHE    = `${CACHE_VERSION}-static`;
 const API_CACHE       = `${CACHE_VERSION}-api`;
 
@@ -31,7 +31,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(keys =>
       Promise.all(
         keys
-          .filter(k => k.startsWith('newswave-') && k !== STATIC_CACHE && k !== API_CACHE)
+          .filter(k => k.startsWith('glancify-') && k !== STATIC_CACHE && k !== API_CACHE)
           .map(k => caches.delete(k))
       )
     )

@@ -167,7 +167,7 @@ export default function IntroPage({ onComplete }) {
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
           <span className="font-display font-bold text-lg text-ink tracking-tight">
-            Glanc<span className="text-scarlet">ify</span>
+            glanc<span className="text-scarlet">ify</span>
           </span>
         </div>
 

@@ -17,12 +17,12 @@ export default function InstallBanner({ isIOS, onInstall, onDismiss }) {
       "
     >
       {/* Icon */}
-      <img src="/icons/glancify mobile logo.png" alt="NewsWave" className="w-9 h-9 rounded-xl shrink-0" />
+      <img src="/icons/glancify mobile logo.png" alt="glancify" className="w-9 h-9 rounded-xl shrink-0" />
 
       {/* Text */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-body font-semibold leading-tight">
-          Add Glancify to your home screen
+          Add glancify to your home screen
         </p>
         {isIOS ? (
           <p className="text-xs text-white/70 font-body mt-0.5 leading-snug">
