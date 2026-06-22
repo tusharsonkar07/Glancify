@@ -1,5 +1,5 @@
 /**
- * glancify API client
+ * Glancify API client
  * Points to the Railway backend in production,
  * proxied to localhost:3001 in development (via vite.config.js).
  */
@@ -12,12 +12,24 @@ async function apiFetch(path) {
   return res.json();
 }
 
-export async function fetchCategory(category = 'top') {
-  return apiFetch(`/news?category=${encodeURIComponent(category)}`);
+/**
+ * @param {string} category
+ * @param {string|null} cursor - nextPage token for loading more results
+ */
+export async function fetchCategory(category = 'top', cursor = null) {
+  let url = `/news?category=${encodeURIComponent(category)}`;
+  if (cursor) url += `&cursor=${encodeURIComponent(cursor)}`;
+  return apiFetch(url);
 }
 
-export async function fetchSearch(query) {
-  return apiFetch(`/news/search?q=${encodeURIComponent(query)}`);
+/**
+ * @param {string} query
+ * @param {string|null} cursor - nextPage token for pagination
+ */
+export async function fetchSearch(query, cursor = null) {
+  let url = `/news/search?q=${encodeURIComponent(query)}`;
+  if (cursor) url += `&cursor=${encodeURIComponent(cursor)}`;
+  return apiFetch(url);
 }
 
 export async function fetchCategories() {

@@ -5,7 +5,7 @@ import BottomNav     from '../components/BottomNav';
 import BentoGrid     from '../components/BentoGrid';
 import ArticleReader from '../components/ArticleReader';
 import InstallBanner from '../components/InstallBanner';
-import { Footer }    from '../pages/IntroPage';          // shared footer
+import { Footer }    from '../pages/IntroPage';
 import { useNews, useSearch } from '../hooks/useNews';
 import { usePWA }    from '../hooks/usePWA';
 
@@ -21,11 +21,18 @@ export default function HomePage() {
     () => JSON.parse(localStorage.getItem('nw_bookmarks') || '[]')
   );
 
-  const { articles, loading, error, refresh } = useNews(category);
-  const { query, results, loading: searching, search, clearSearch } = useSearch();
+  const {
+    articles, loading, loadingMore, error, hasMore, loadMore, refresh,
+  } = useNews(category);
+
+  const {
+    query, results, loading: searching, loadingMore: searchLoadingMore,
+    hasMore: searchHasMore, loadMoreResults, search, clearSearch,
+  } = useSearch();
+
   const { showBanner, isIOS, triggerInstall, dismiss } = usePWA();
 
-  /* ─── Swipe gesture ─────────────────────────────────────────────────────── */
+  /* ─── Swipe gesture ──────────────────────────────────────────────────────── */
   const touchStart  = useRef(null);
   const touchActive = useRef(false);
 
@@ -68,10 +75,16 @@ export default function HomePage() {
     });
   };
 
-  const displayArticles = query.trim().length >= 2 ? results : articles;
-  const isLoading       = query.trim().length >= 2 ? searching : loading;
-  const swipeClass      = swipeDir === 'left'  ? 'animate-swipe-left'
-                        : swipeDir === 'right' ? 'animate-swipe-right' : '';
+  // Determine which data set to show
+  const isSearchMode    = query.trim().length >= 2;
+  const displayArticles = isSearchMode ? results   : articles;
+  const isLoading       = isSearchMode ? searching : loading;
+  const isLoadingMore   = isSearchMode ? searchLoadingMore : loadingMore;
+  const canLoadMore     = isSearchMode ? searchHasMore     : hasMore;
+  const handleLoadMore  = isSearchMode ? loadMoreResults   : loadMore;
+
+  const swipeClass = swipeDir === 'left'  ? 'animate-swipe-left'
+                   : swipeDir === 'right' ? 'animate-swipe-right' : '';
 
   return (
     <div className="min-h-dvh bg-newsprint">
@@ -153,14 +166,17 @@ export default function HomePage() {
           <BentoGrid
             articles={displayArticles}
             loading={isLoading}
+            loadingMore={isLoadingMore}
+            hasMore={canLoadMore}
+            onLoadMore={handleLoadMore}
             onArticleClick={setSelectedArticle}
             bookmarks={bookmarks}
             onBookmark={toggleBookmark}
           />
         </div>
 
-        {/* ── Page footer — only shown when there are articles loaded ────── */}
-        {!isLoading && displayArticles.length > 0 && (
+        {/* Footer — only shown when articles are loaded and there are no more to fetch */}
+        {!isLoading && !canLoadMore && !isLoadingMore && displayArticles.length > 0 && (
           <div className="max-w-7xl mx-auto px-4 pt-2 pb-4">
             <div className="flex items-center gap-4 mb-4">
               <div className="flex-1 h-px bg-rule" />
@@ -206,7 +222,7 @@ export default function HomePage() {
   );
 }
 
-/* ─── Swipe hint ─────────────────────────────────────────────────────────── */
+/* ─── Swipe hint ──────────────────────────────────────────────────────────── */
 function SwipeHint() {
   const seen = sessionStorage.getItem('nw_swipe_seen');
   if (seen) return null;
@@ -220,7 +236,7 @@ function SwipeHint() {
   );
 }
 
-/* ─── Bookmarks shelf ────────────────────────────────────────────────────── */
+/* ─── Bookmarks shelf ─────────────────────────────────────────────────────── */
 function BookmarksShelf({ bookmarks, onOpen, onRemove }) {
   const [open, setOpen] = useState(false);
   return (
