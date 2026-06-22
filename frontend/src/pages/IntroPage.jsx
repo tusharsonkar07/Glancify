@@ -8,7 +8,7 @@ import DeveloperCard from '../components/DeveloperCard';
 
 const STATS = [
   { value: '7',    label: 'Categories'    },
-  { value: '200',  label: 'Stories / day' },
+  { value: '200+',  label: 'Stories / day' },
   { value: '0',    label: 'Ads. Ever.'    },
   { value: '∞',    label: 'Readers'       },
 ];
