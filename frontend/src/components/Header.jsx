@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import DeveloperCard from './DeveloperCard';
+import MakerBadge from './MakerBadge';
 
 /*
   Changes from previous version:
@@ -56,6 +57,7 @@ export default function Header({ onSearch, onClearSearch, isSearching }) {
 
           {/* Search bar */}
           <div className={`flex items-center gap-2 transition-all duration-200 ${open ? 'flex-1' : ''}`}>
+            {!open && <MakerBadge onClick={() => setDevCardOpen(true)} />}
             {open && (
               <div className="flex-1 flex items-center gap-2 bg-white border border-rule rounded-xl px-3 h-9 shadow-sm">
                 <svg className="w-4 h-4 text-slate shrink-0" viewBox="0 0 20 20" fill="currentColor">

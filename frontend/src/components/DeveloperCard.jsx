@@ -51,6 +51,12 @@ export default function DeveloperCard({ isOpen, onClose, anchor = 'footer' }) {
           color: #fff;
           border-color: #1D4ED8;
         }
+        @media (max-width: 640px) {
+          .dc-card {
+            width: calc(100vw - 2rem) !important;
+            max-width: none !important;
+          }
+        }
       `}</style>
 
       {/* ── Backdrop — light-dismiss ─────────────────────────────────── */}

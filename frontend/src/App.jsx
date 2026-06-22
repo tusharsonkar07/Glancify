@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import IntroPage   from './pages/IntroPage';
 import HomePage    from './pages/HomePage';
-import MakerBadge  from './components/MakerBadge';
 
 export default function App() {
   // Show intro only for first-time visitors
@@ -36,13 +35,6 @@ export default function App() {
         ? <IntroPage onComplete={handleIntroComplete} />
         : <HomePage />
       }
-
-      {/*
-        MakerBadge lives outside both pages — always in the DOM,
-        always visible. No feature is touched. z-55 sits above
-        BottomNav (z-40) and below the DeveloperCard dialog (z-61).
-      */}
-      <MakerBadge />
     </>
   );
 }
